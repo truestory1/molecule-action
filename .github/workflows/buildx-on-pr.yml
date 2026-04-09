@@ -40,7 +40,7 @@ jobs:
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7
         with:
           context: ${{ matrix.scenario }}
-          file: Containerfile
+          file: ${{ matrix.scenario }}/Containerfile
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }}
           load: true
