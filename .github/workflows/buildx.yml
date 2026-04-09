@@ -1,15 +1,18 @@
-name: CI-PR
+name: Build Images
 
 on:
-  pull_request:
   workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - 'master'
 
 env:
   PLATFORMS: linux/amd64,linux/arm64
   REGISTRY: ghcr.io
 
 jobs:
-  ci-pr:
+  build:
     strategy:
       fail-fast: false
       matrix:
@@ -29,6 +32,24 @@ jobs:
       - name: Set up variable repository name
         run: echo "IMAGE_NAME=${{ github.repository }}" >> $GITHUB_ENV
 
+      - name: Initial image build
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7
+        with:
+          context: ${{ matrix.scenario }}
+          file: ${{ matrix.scenario }}/Containerfile
+          tags: ${{ env.IMAGE_NAME }}:testing
+          platforms: ${{ env.PLATFORMS }}
+          provenance: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Get Variables
+        id: vars
+        run: |
+          VER_FULL=$(date +"%Y.%m.%d")
+          echo "VER_FULL=$VER_FULL"
+          echo "VER_FULL=$VER_FULL" >> $GITHUB_ENV
+
       - name: Image registry login
         uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4
         with:
@@ -36,17 +57,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build
+      - name: Buildx and Push
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7
         with:
           context: ${{ matrix.scenario }}
           file: ${{ matrix.scenario }}/Containerfile
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }}
-          load: true
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VER_FULL }}
+          platforms: ${{ env.PLATFORMS }}
+          provenance: false
+          push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Test the image
-        run: |
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }} uname -a
+          outputs: type=image,name=target,annotation-index.org.opencontainers.image.description=NetOps Toolkit - Kubernetes Debugging Container
