@@ -50,6 +50,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: ${{ env.PLATFORMS }}
+          provenance: false
 
       - name: Test the image
         run: |
