@@ -29,26 +29,12 @@ jobs:
       - name: Set up Buildx
         uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4
 
-      - name: Set up variable repository name
-        run: echo "IMAGE_NAME=${{ github.repository }}" >> $GITHUB_ENV
-
-      - name: Initial image build
-        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7
-        with:
-          context: ${{ matrix.scenario }}
-          file: ${{ matrix.scenario }}/Containerfile
-          tags: ${{ env.IMAGE_NAME }}:testing
-          platforms: ${{ env.PLATFORMS }}
-          provenance: false
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Get Variables
-        id: vars
+      - name: Set Variables
         run: |
           VER_FULL=$(date +"%Y.%m.%d")
           echo "VER_FULL=$VER_FULL"
           echo "VER_FULL=$VER_FULL" >> $GITHUB_ENV
+          echo "IMAGE_NAME=${{ github.repository }}" >> $GITHUB_ENV
 
       - name: Image registry login
         uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4
@@ -70,4 +56,4 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          outputs: type=image,name=target,annotation-index.org.opencontainers.image.description=NetOps Toolkit - Kubernetes Debugging Container
+          # outputs: type=image,name=target,annotation-index.org.opencontainers.image.description=NetOps Toolkit - Kubernetes Debugging Container
