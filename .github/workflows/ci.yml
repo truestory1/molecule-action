@@ -52,9 +52,17 @@ jobs:
           platforms: ${{ env.PLATFORMS }}
           # provenance: false
 
-      - name: Test the image
+      - name: Test - uname
         run: |
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }} uname -a
+          docker run ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }} uname -a
+
+      - name: Test - ansible
+        run: |
+          docker run ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }} ansible --version
+
+      - name: Test - molecule
+        run: |
+          docker run ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }} molecule --version
 
       # - name: Push the image
       #   uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7
