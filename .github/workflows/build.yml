@@ -51,7 +51,6 @@ jobs:
           file: ${{ matrix.scenario }}/Containerfile
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          load: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: ${{ env.PLATFORMS }}
