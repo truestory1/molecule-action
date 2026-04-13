@@ -49,19 +49,20 @@ jobs:
           load: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          platforms: ${{ env.PLATFORMS }}
 
       - name: Test the image
         run: |
           docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }} uname -a
 
-      - name: Push the image
-        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7
-        with:
-          context: ${{ matrix.scenario }}
-          file: ${{ matrix.scenario }}/Containerfile
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }}
-          load: true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          push: true
+      # - name: Push the image
+      #   uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7
+      #   with:
+      #     context: ${{ matrix.scenario }}
+      #     file: ${{ matrix.scenario }}/Containerfile
+      #     tags: |
+      #       ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }}
+      #     load: true
+      #     cache-from: type=gha
+      #     cache-to: type=gha,mode=max
+      #     push: true
