@@ -46,7 +46,7 @@ jobs:
           file: ${{ matrix.scenario }}/Containerfile
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }}
-          # load: true
+          load: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: ${{ env.PLATFORMS }}
