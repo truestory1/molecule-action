@@ -1,14 +1,13 @@
-name: Build Images
+name: Build
 
 on:
+  push:
+    branches:
+      - master
   workflow_dispatch:
-  # pull_request:
-  # push:
-  #   branches:
-  #     - 'master'
 
 env:
-  PLATFORMS: linux/amd64,linux/arm64
+  PLATFORMS: linux/amd64 #,linux/arm64
   REGISTRY: ghcr.io
 
 jobs:
@@ -19,6 +18,9 @@ jobs:
         scenario:
           - rockylinux-10
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -29,12 +31,8 @@ jobs:
       - name: Set up Buildx
         uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4
 
-      - name: Set Variables
-        run: |
-          VER_FULL=$(date +"%Y.%m.%d")
-          echo "VER_FULL=$VER_FULL"
-          echo "VER_FULL=$VER_FULL" >> $GITHUB_ENV
-          echo "IMAGE_NAME=${{ github.repository }}" >> $GITHUB_ENV
+      - name: Set up variable repository name
+        run: echo "IMAGE_NAME=${{ github.repository }}" >> $GITHUB_ENV
 
       - name: Image registry login
         uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4
@@ -43,17 +41,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Buildx and Push
+      - name: Set up tags based on date
+        run: echo "IMAGE_TAG=$(date +'%Y%m%d')" >> $GITHUB_ENV
+
+      - name: Build and push
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7
         with:
           context: ${{ matrix.scenario }}
           file: ${{ matrix.scenario }}/Containerfile
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VER_FULL }}
-          platforms: ${{ env.PLATFORMS }}
-          provenance: false
-          push: true
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          load: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          # outputs: type=image,name=target,annotation-index.org.opencontainers.image.description=NetOps Toolkit - Kubernetes Debugging Container
+          platforms: ${{ env.PLATFORMS }}
+          push: true
