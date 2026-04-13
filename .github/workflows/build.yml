@@ -50,7 +50,7 @@ jobs:
           context: ${{ matrix.scenario }}
           file: ${{ matrix.scenario }}/Containerfile
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.scenario }}-${{ env.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: ${{ env.PLATFORMS }}
