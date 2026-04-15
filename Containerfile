@@ -1,4 +1,4 @@
-FROM  rockylinux/rockylinux:10-ubi-init
+FROM rockylinux/rockylinux:10-ubi
 
 RUN dnf -y install python3-pip \
     && dnf clean all
