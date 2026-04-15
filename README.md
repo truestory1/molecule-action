@@ -1,6 +1,6 @@
 # container-ansible
 
-Container image based on Rocky Linux 10 (UBI init) with Ansible tooling pre-installed. Built for multi-architecture (`linux/amd64`, `linux/arm64`) and published to GitHub Container Registry.
+Container image for running [Ansible Molecule](https://ansible.readthedocs.io/projects/molecule/) tests. Based on Rocky Linux 10 (UBI init), built for `linux/amd64` and published to GitHub Container Registry.
 
 ## Included Tools
 
@@ -14,35 +14,35 @@ Container image based on Rocky Linux 10 (UBI init) with Ansible tooling pre-inst
 
 ## Usage
 
-Pull the image from GHCR:
+Pull the image:
 
 ```bash
-docker pull ghcr.io/<owner>/container-ansible:latest
+docker pull ghcr.io/<owner>/container-ansible:rockylinux10-YYYYMMDD
 ```
 
-Run interactively:
+Run a Molecule scenario:
 
 ```bash
-docker run --rm -it ghcr.io/<owner>/container-ansible:latest bash
+docker run --rm -v "$(pwd):/work" -w /work \
+  ghcr.io/<owner>/container-ansible:rockylinux10-YYYYMMDD \
+  molecule test -s <scenario-name>
 ```
+
+Replace `<scenario-name>` with the name of the Molecule scenario to run (e.g. `default`).
 
 ## Building Locally
 
 ```bash
-docker build -f rockylinux-10/Containerfile -t container-ansible rockylinux-10/
+docker build -f Containerfile -t container-ansible .
 ```
 
 ## CI/CD
 
 | Workflow | Trigger | Description |
 |----------|---------|-------------|
-| **buildx** | Push to `master` | Builds multi-arch image and pushes to GHCR with calendar-versioned tags (`YYYY`, `YYYY.MM`, `YYYY.MM.DD`, `latest`) |
-| **CI-PR** | Pull request | Builds the image and runs a basic smoke test |
-| **Molecule** | Pull request to `master` | Installs dependencies and runs Molecule tests |
+| **Build** | Push to `master`, manual | Builds the image and pushes to GHCR with a date-based tag |
+| **CI-PR** | Pull request, manual | Builds the image and runs smoke tests (`uname`, `ansible`, `molecule`) |
 
 ## Image Tags
 
-- `latest` — most recent build from `master`
-- `YYYY.MM.DD` — full date tag
-- `YYYY.MM` — minor version tag
-- `YYYY` — major version tag
+- `rockylinux10-YYYYMMDD` — date-stamped tag from the build on `master`
