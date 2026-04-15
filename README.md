@@ -1,6 +1,6 @@
 # container-ansible
 
-Container image for running [Ansible Molecule](https://ansible.readthedocs.io/projects/molecule/) tests. Based on Rocky Linux 10 (UBI init), built for `linux/amd64` and published to GitHub Container Registry.
+Container image for running [Ansible Molecule](https://ansible.readthedocs.io/projects/molecule/) tests. Based on Rocky Linux 10 (UBI), built for `linux/amd64` and published to GitHub Container Registry.
 
 ## Included Tools
 
@@ -17,14 +17,14 @@ Container image for running [Ansible Molecule](https://ansible.readthedocs.io/pr
 Pull the image:
 
 ```bash
-docker pull ghcr.io/<owner>/container-ansible:rockylinux10-YYYYMMDD
+docker pull ghcr.io/truestory1/container-ansible:YYYYMMDD
 ```
 
 Run a Molecule scenario:
 
 ```bash
 docker run --rm -v "$(pwd):/work" -w /work \
-  ghcr.io/<owner>/container-ansible:rockylinux10-YYYYMMDD \
+  ghcr.io/truestory1/container-ansible:YYYYMMDD \
   molecule test -s <scenario-name>
 ```
 
@@ -45,4 +45,4 @@ docker build -f Containerfile -t container-ansible .
 
 ## Image Tags
 
-- `rockylinux10-YYYYMMDD` — date-stamped tag from the build on `master`
+- `YYYYMMDD` — date-stamped tag from the build on `master`
