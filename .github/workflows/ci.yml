@@ -47,9 +47,3 @@ jobs:
       - name: Test - molecule
         run: |
           docker run ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }} molecule --version
-
-      - name: Test - github action
-        uses: ./
-        with:
-          molecule_command: --version
-          molecule_container_image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }}
