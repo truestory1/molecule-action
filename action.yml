@@ -63,12 +63,6 @@ inputs:
     required: false
     default: ${{ github.repository }}
 
-  molecule_container_image:
-    description: |
-      Container image to use for running molecule command. Default is 'ghcr.io/truestory1/molecule-action:latest'.
-    required: false
-    default: "ghcr.io/truestory1/molecule-action:latest"
-
 runs:
   using: docker
   image: docker://ghcr.io/truestory1/molecule-action:latest
