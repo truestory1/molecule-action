@@ -46,16 +46,6 @@ A GitHub Action for running [Ansible Molecule](https://ansible.readthedocs.io/pr
     molecule_command: converge
 ```
 
-## Included Tools
-
-| Tool | Version |
-|------|---------|
-| ansible-core | 2.20.4 |
-| molecule | 26.4.0 |
-| molecule-plugins | 25.8.12 |
-| ansible-lint | 26.4.0 |
-| yamllint | 1.38.0 |
-
 ## Building the Container Locally
 
 ```bash
