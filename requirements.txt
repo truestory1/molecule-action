@@ -2,4 +2,4 @@ molecule==26.4.0
 molecule-plugins==25.8.12
 yamllint==1.38.0
 ansible-lint==26.4.0
-ansible-core==2.20.4
+ansible-core==2.20.5
