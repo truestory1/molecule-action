@@ -36,10 +36,6 @@ jobs:
           platforms: ${{ env.PLATFORMS }}
           # provenance: false
 
-      - name: Test - uname
-        run: |
-          docker run ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }} uname -a
-
       - name: Test - ansible
         run: |
           docker run ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }} ansible --version
