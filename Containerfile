@@ -5,3 +5,5 @@ RUN dnf -y install python3-pip \
 
 COPY ./requirements.txt /tmp/requirements.txt
 RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
+
+CMD ["molecule"]
