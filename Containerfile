@@ -9,7 +9,7 @@ COPY ./requirements.txt /tmp/requirements.txt
 RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
 
 # RUN ansible-galaxy collection install containers.podman
-RUN sudo dnf remove -y docker docker-client docker-client-latest docker-common \
+RUN dnf remove -y docker docker-client docker-client-latest docker-common \
     docker-latest docker-latest-logrotate docker-logrotate docker-engine \
     podman runc
 
