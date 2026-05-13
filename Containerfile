@@ -21,6 +21,6 @@ RUN dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-
 RUN dnf -y install docker-ce docker-ce-cli containerd.io \
     docker-buildx-plugin docker-compose-plugin
 
-RUN systemctl enable --now docker
+RUN systemctl enable docker
 
 CMD ["/bin/sh", "-c", "cd ${INPUT_MOLECULE_WORKING_DIR} && molecule ${INPUT_MOLECULE_OPTIONS} ${INPUT_MOLECULE_COMMAND} ${INPUT_MOLECULE_ARGS}"]
