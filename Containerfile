@@ -23,4 +23,6 @@ RUN dnf -y install docker-ce docker-ce-cli containerd.io \
 
 RUN systemctl enable docker
 
+RUN pip3 install docker
+
 CMD ["/bin/sh", "-c", "cd ${INPUT_MOLECULE_WORKING_DIR} && molecule ${INPUT_MOLECULE_OPTIONS} ${INPUT_MOLECULE_COMMAND} ${INPUT_MOLECULE_ARGS}"]
