@@ -47,6 +47,9 @@ jobs:
           docker run ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }} molecule --version
 
       - name: Test - molecule converge
-        uses: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }}
-        with:
-          molecule_working_dir: ${{ github.repository }}/tests/test-role
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/workspace" \
+            -w /workspace \
+            -e INPUT_MOLECULE_WORKING_DIR="${{ github.repository }}/tests/test-role" \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }}
