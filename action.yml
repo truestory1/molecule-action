@@ -67,6 +67,6 @@ runs:
   using: docker
   image: docker://ghcr.io/truestory1/molecule-action:latest
   env:
-    ANSIBLE_ASYNC_DIR: "/tmp/.ansible_async"
+    ANSIBLE_ASYNC_DIR: "/var/tmp/.ansible_async"
     ANSIBLE_FORCE_COLOR: "1"
-    ANSIBLE_REMOTE_TMP: "/tmp/.ansible_remote_tmp"
+    ANSIBLE_REMOTE_TMP: "/var/tmp/.ansible_remote_tmp"
