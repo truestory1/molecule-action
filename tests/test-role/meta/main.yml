@@ -1,0 +1,12 @@
+#SPDX-License-Identifier: MIT-0
+galaxy_info:
+  author: Author
+  description: test role
+  role_name: testrole
+  namespace: test
+  license: copyleft
+  min_ansible_version: "2.2"
+  galaxy_tags: []
+
+
+dependencies: []

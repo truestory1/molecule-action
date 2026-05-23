@@ -1,0 +1,16 @@
+---
+- name: Prepare
+  hosts: all
+  # become: true
+  gather_facts: false
+  tasks:
+
+    - name: Install required dependencies
+      ansible.builtin.package:
+        name:
+          - sudo
+        state: present
+
+    - name: RH - fix /etc/shadow permissions
+      ansible.builtin.raw: chmod 0400 /etc/shadow
+      changed_when: false
