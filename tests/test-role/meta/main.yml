@@ -4,8 +4,8 @@ galaxy_info:
   description: test role
   role_name: testrole
   namespace: test
-  license: copyleft
-  min_ansible_version: "2.2"
+  license: MIT-0
+  min_ansible_version: "2.14"
   galaxy_tags: []
 
 
