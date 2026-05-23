@@ -21,6 +21,11 @@ platforms:
     image: rockylinux/rockylinux:10-ubi-init@sha256:6c0ce6cdbe6fecb88598a0656e6ca60b93ba1a4216c166b42317e6477cdfdecb
     privileged: true
     command: "/usr/sbin/init"
+    environment:
+      container: docker
+    tmpfs:
+      - /run
+      - /run/lock
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:rw"
 provisioner:
