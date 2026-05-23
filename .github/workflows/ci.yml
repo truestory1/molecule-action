@@ -54,4 +54,5 @@ jobs:
             -w /workspace \
             -e INPUT_MOLECULE_WORKING_DIR="tests/test-role" \
             -e INPUT_MOLECULE_COMMAND="converge" \
+            -e ANSIBLE_REMOTE_TMP="/tmp/.ansible_remote_tmp" \
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }}
