@@ -1,0 +1,25 @@
+---
+- name: Prepare
+  hosts: all
+  # become: true
+  gather_facts: false
+  tasks:
+
+    - name: Install Python3
+      ansible.builtin.raw: |
+        if command -v apt-get >/dev/null 2>&1; then
+          apt-get update -qq && apt-get install -y -qq python3
+        elif command -v dnf >/dev/null 2>&1; then
+          dnf install -y python3
+        fi
+      changed_when: true
+
+    - name: Install required dependencies
+      ansible.builtin.package:
+        name:
+          - sudo
+        state: present
+
+    - name: Ensure /etc/shadow permissions
+      ansible.builtin.raw: chmod 0400 /etc/shadow
+      changed_when: false

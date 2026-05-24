@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        # with:
+        #   path: ${{ github.repository }}
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -43,3 +45,15 @@ jobs:
       - name: Test - molecule
         run: |
           docker run ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }} molecule --version
+
+      - name: Test - molecule converge
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/workspace" \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -w /workspace \
+            -e INPUT_MOLECULE_WORKING_DIR="tests/test-role" \
+            -e INPUT_MOLECULE_COMMAND="converge" \
+            -e ANSIBLE_ASYNC_DIR="/tmp/.ansible_async" \
+            -e ANSIBLE_FORCE_COLOR="1" \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }}
