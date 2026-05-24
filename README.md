@@ -1,43 +1,70 @@
 # Ansible Molecule GitHub Action
 
-A GitHub Action for running [Ansible Molecule](https://ansible.readthedocs.io/projects/molecule/) tests in your CI/CD pipelines. Runs inside a Rocky Linux 10 (UBI) container with Ansible, Molecule, and linting tools pre-installed.
+A GitHub Action for running [Ansible Molecule](https://ansible.readthedocs.io/projects/molecule/) tests in CI/CD pipelines.
+
+**Included versions:**
+- ansible-core 2.20.5
+- molecule 26.4.0 with molecule-plugins 25.8.12
+- ansible-lint 26.4.0
+- yamllint 1.38.0
+
+The action container is Debian-based and includes Docker CE. It mounts the host's Docker socket to create sibling test containers.
 
 ## Inputs
 
 | Input | Description | Required | Default |
 |-------|-------------|----------|---------|
-| `molecule_command` | Molecule command to run (e.g. `test`, `converge`, `verify`, `lint`) | Yes | `test` |
-| `molecule_options` | Global Molecule options such as `--debug`, `-v`, `--base-config`, `--env-file` | No | |
-| `molecule_args` | Arguments passed to the command (e.g. `-s <scenario>`, `--driver-name docker`, `--destroy never`, `--parallel`) | No | |
-| `molecule_working_dir` | Path to a subdirectory in the repository to run Molecule from. Useful when the Ansible role is not at the repository root. | No | `${{ github.repository }}` |
+| `molecule_command` | Molecule command (`test`, `converge`, `verify`, `lint`, …) | Yes | `test` |
+| `molecule_options` | Global options (`--debug`, `-v`, `--base-config`, `--env-file`, …) | No | |
+| `molecule_args` | Command arguments (`-s <scenario>`, `--destroy never`, `--parallel`, …) | No | |
+| `molecule_working_dir` | Path within the repository to run Molecule from. Defaults to `${{ github.repository }}`, which requires the checkout `path:` to match. | No | `${{ github.repository }}` |
 
 ## Usage
 
-### Basic — run all scenarios with `molecule test`
+### Basic
+
+The checkout `path` must match `molecule_working_dir` so Molecule can find the role. By default both are `${{ github.repository }}`.
 
 ```yaml
-- uses: truestory1/molecule-action@master
+jobs:
+  molecule:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ${{ github.repository }}
+      - uses: truestory1/molecule-action@master
 ```
 
-### Run a specific scenario
+### Matrix across multiple scenarios
 
 ```yaml
-- uses: truestory1/molecule-action@master
-  with:
-    molecule_command: test
-    molecule_args: -s my-scenario
+jobs:
+  molecule:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario: [rocky8, rocky9, oracle8]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ${{ github.repository }}
+      - uses: truestory1/molecule-action@master
+        with:
+          molecule_args: --scenario-name ${{ matrix.scenario }}
 ```
 
-### Run from a subdirectory
+### Run from a subdirectory (role not at repo root)
 
 ```yaml
+- uses: actions/checkout@v4
 - uses: truestory1/molecule-action@master
   with:
-    molecule_command: test
     molecule_working_dir: roles/my_role
 ```
 
-### Verbose output with debug
+### Verbose/debug output
 
 ```yaml
 - uses: truestory1/molecule-action@master
@@ -46,8 +73,42 @@ A GitHub Action for running [Ansible Molecule](https://ansible.readthedocs.io/pr
     molecule_command: converge
 ```
 
-## Building the Container Locally
+## Systemd containers
+
+For scenarios that use systemd as PID 1 (`command: /usr/sbin/init`), add `cgroupns_mode: host` to the platform in `molecule.yml` so Docker CE on cgroupsv2 hosts (ubuntu-24.04+) can properly initialize systemd:
+
+```yaml
+platforms:
+  - name: instance
+    image: rockylinux/rockylinux:9
+    privileged: true
+    command: "/usr/sbin/init"
+    cgroupns_mode: host
+    tmpfs:
+      - /run
+      - /run/lock
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:rw"
+```
+
+## Building the container locally
 
 ```bash
 docker build -f Containerfile -t molecule-action .
+# or with podman:
+podman build -f Containerfile -t molecule-action .
+```
+
+### Running locally with podman
+
+```bash
+podman run --rm \
+  --security-opt label=type:spc_t \
+  -v "$PWD:/workspace:z" \
+  -v "$XDG_RUNTIME_DIR/podman/podman.sock:/var/run/docker.sock" \
+  -w /workspace \
+  -e INPUT_MOLECULE_WORKING_DIR="<role-subdir>" \
+  -e INPUT_MOLECULE_COMMAND="converge" \
+  -e ANSIBLE_FORCE_COLOR="1" \
+  molecule-action
 ```
