@@ -6,7 +6,12 @@
   tasks:
 
     - name: Install Python3
-      ansible.builtin.raw: apt-get update -qq && apt-get install -y -qq python3
+      ansible.builtin.raw: |
+        if command -v apt-get >/dev/null 2>&1; then
+          apt-get update -qq && apt-get install -y -qq python3
+        elif command -v dnf >/dev/null 2>&1; then
+          dnf install -y python3
+        fi
       changed_when: true
 
     - name: Install required dependencies

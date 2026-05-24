@@ -19,6 +19,18 @@ platforms:
     pre_build_image: true
     # renovate: datasource=docker
     image: ubuntu:24.04
+  - name: testrole02
+    pre_build_image: true
+    # renovate: datasource=docker
+    image: rockylinux/rockylinux:10-ubi-init
+    privileged: true
+    command: "/usr/sbin/init"
+    cgroupns_mode: host
+    tmpfs:
+      - /run
+      - /run/lock
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:rw"
 provisioner:
   name: ansible
   config_options:
