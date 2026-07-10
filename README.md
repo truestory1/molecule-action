@@ -8,7 +8,11 @@ A GitHub Action for running [Ansible Molecule](https://ansible.readthedocs.io/pr
 - ansible-lint 26.4.0
 - yamllint 1.38.0
 
-The action container is Debian-based and includes Docker CE. It mounts the host's Docker socket to create sibling test containers.
+The action container is Debian-based and includes both Docker CE and Podman. It supports all three major container drivers:
+
+- **docker** – uses the host Docker daemon via the mounted Docker socket
+- **podman** – uses the host Podman daemon via the mounted Podman socket
+- **containers** – uses the Ansible containers driver (Podman-backed)
 
 ## Inputs
 
@@ -72,6 +76,31 @@ jobs:
     molecule_options: --debug -v
     molecule_command: converge
 ```
+
+### Using the podman driver
+
+To use the `podman` driver, start the Podman system socket on the runner and mount it into the action container:
+
+```yaml
+jobs:
+  molecule:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start Podman socket
+        run: sudo systemctl start podman.socket
+
+      - uses: actions/checkout@v4
+        with:
+          path: ${{ github.repository }}
+
+      - uses: truestory1/molecule-action@master
+        with:
+          molecule_args: --scenario-name podman
+        env:
+          CONTAINER_HOST: unix:///run/podman/podman.sock
+```
+
+> **Note:** When using this action with the podman driver, pass `-v /run/podman/podman.sock:/run/podman/podman.sock` and `-e CONTAINER_HOST=unix:///run/podman/podman.sock` to the container.
 
 ## Systemd containers
 
