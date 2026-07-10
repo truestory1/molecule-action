@@ -27,8 +27,8 @@ platforms:
     command: "/usr/sbin/init"
     cgroupns_mode: host
     tmpfs:
-      - /run
-      - /run/lock
+      /run: ""
+      /run/lock: ""
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:rw"
 provisioner:
