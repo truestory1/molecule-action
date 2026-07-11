@@ -46,7 +46,23 @@ jobs:
         run: |
           docker run ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }} molecule --version
 
-      - name: Test - molecule converge
+      - name: Start podman socket
+        run: sudo systemctl start podman.socket
+
+      - name: Test - molecule converge (containers)
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/workspace" \
+            -v /run/podman/podman.sock:/run/podman/podman.sock \
+            -w /workspace \
+            -e CONTAINER_HOST="unix:///run/podman/podman.sock" \
+            -e INPUT_MOLECULE_WORKING_DIR="tests/test-role" \
+            -e INPUT_MOLECULE_COMMAND="converge" \
+            -e ANSIBLE_ASYNC_DIR="/tmp/.ansible_async" \
+            -e ANSIBLE_FORCE_COLOR="1" \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }}
+
+      - name: Test - molecule converge (docker)
         run: |
           docker run --rm \
             -v "${{ github.workspace }}:/workspace" \
@@ -54,6 +70,21 @@ jobs:
             -w /workspace \
             -e INPUT_MOLECULE_WORKING_DIR="tests/test-role" \
             -e INPUT_MOLECULE_COMMAND="converge" \
+            -e INPUT_MOLECULE_ARGS="--scenario-name docker" \
+            -e ANSIBLE_ASYNC_DIR="/tmp/.ansible_async" \
+            -e ANSIBLE_FORCE_COLOR="1" \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }}
+
+      - name: Test - molecule converge (podman)
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/workspace" \
+            -v /run/podman/podman.sock:/run/podman/podman.sock \
+            -w /workspace \
+            -e CONTAINER_HOST="unix:///run/podman/podman.sock" \
+            -e INPUT_MOLECULE_WORKING_DIR="tests/test-role" \
+            -e INPUT_MOLECULE_COMMAND="converge" \
+            -e INPUT_MOLECULE_ARGS="--scenario-name podman" \
             -e ANSIBLE_ASYNC_DIR="/tmp/.ansible_async" \
             -e ANSIBLE_FORCE_COLOR="1" \
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }}

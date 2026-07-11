@@ -1,0 +1,28 @@
+---
+lint: |
+  set -e
+  yamllint .
+  ansible-lint -f full
+dependency:
+  name: galaxy
+  options:
+    # ignore-certs: True
+    # ignore-errors: True
+    role-file: requirements.yml
+    requirements-file: requirements.yml
+    force: false
+
+driver:
+  name: podman
+platforms:
+  - name: testrole-podman-01
+    pre_build_image: true
+    # renovate: datasource=docker
+    image: ubuntu:24.04
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      roles_path: "$MOLECULE_PROJECT_DIRECTORY/.."
+verifier:
+  name: ansible
