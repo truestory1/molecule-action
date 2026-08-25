@@ -1,4 +1,4 @@
-FROM debian:stable@sha256:9631e4628fccfb6f1ff9e27de2af0e82f61591c78d1584c778f92db9a541a3cc
+FROM debian:stable@sha256:7fa362f5e7c036d7f45621a6c721c03493cdcb5889adfcd65587759e34fe4c6f
 
 RUN apt-get update && apt-get install -y \
     python3-pip \
