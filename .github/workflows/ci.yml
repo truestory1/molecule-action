@@ -46,14 +46,14 @@ jobs:
         run: |
           docker run ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }} molecule --version
 
-      - name: Test - molecule converge
+      - name: Test - molecule
         run: |
           docker run --rm \
             -v "${{ github.workspace }}:/workspace" \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -w /workspace \
             -e INPUT_MOLECULE_WORKING_DIR="tests/test-role" \
-            -e INPUT_MOLECULE_COMMAND="converge" \
+            -e INPUT_MOLECULE_COMMAND="test" \
             -e ANSIBLE_ASYNC_DIR="/tmp/.ansible_async" \
             -e ANSIBLE_FORCE_COLOR="1" \
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing-${{ github.event.pull_request.number }}
