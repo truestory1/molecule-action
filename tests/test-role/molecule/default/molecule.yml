@@ -13,7 +13,7 @@ dependency:
     force: false
 
 driver:
-  name: containers
+  name: docker
 platforms:
   - name: testrole01
     pre_build_image: false
