@@ -19,6 +19,7 @@
       ansible.builtin.package:
         name:
           - sudo
+          - rsync
         state: present
 
     - name: Ensure /etc/shadow permissions
