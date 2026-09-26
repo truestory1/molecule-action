@@ -3,12 +3,14 @@
 A GitHub Action for running [Ansible Molecule](https://ansible.readthedocs.io/projects/molecule/) tests in CI/CD pipelines.
 
 **Included versions:**
-- ansible-core 2.20.5
-- molecule 26.4.0 with molecule-plugins 25.8.12
-- ansible-lint 26.4.0
+- ansible-core 2.21.4
+- molecule 26.9.0 with molecule-plugins 26.7.15
+- ansible-lint 26.9.0
 - yamllint 1.38.0
+- docker 7.2.0
+- molecule-hetznercloud 2.8.0
 
-The action container is Debian-based and includes Docker CE. It mounts the host's Docker socket to create sibling test containers.
+The action container is Debian-based and includes Docker CE.
 
 ## Inputs
 
