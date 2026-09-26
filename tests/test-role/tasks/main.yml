@@ -1,3 +1,6 @@
-#SPDX-License-Identifier: MIT-0
 ---
-# tasks file for test_role
+- name: Create test file
+  ansible.builtin.copy:
+    content: "This is a test file created by Ansible."
+    dest: /tmp/ansible-test.txt
+    mode: "0644"

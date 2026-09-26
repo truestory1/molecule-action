@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     curl \
     gnupg \
+    rsync \
     && rm -rf /var/lib/apt/lists/*
 
 RUN install -m 0755 -d /etc/apt/keyrings \
@@ -24,5 +25,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 COPY ./requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
+
+RUN ansible-galaxy collection install community.docker ansible.posix community.general
 
 CMD ["/bin/sh", "-c", "cd ${INPUT_MOLECULE_WORKING_DIR} && molecule ${INPUT_MOLECULE_OPTIONS} ${INPUT_MOLECULE_COMMAND} ${INPUT_MOLECULE_ARGS}"]

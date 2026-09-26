@@ -2,9 +2,15 @@
 # Purpose: assert that the instance really ended up in the expected state.
 # Molecule calls this playbook with `molecule verify`.
 - name: Verify
-  hosts: instance
+  hosts: all
   gather_facts: false # Quicker, if you do not need facts
   tasks:
-    - name: Assert something
+    - name: Check /tmp/ansible-test.txt exists
+      ansible.builtin.stat:
+        path: /tmp/ansible-test.txt
+      register: ansible_test_file
+
+    - name: Assert /tmp/ansible-test.txt exists
       ansible.builtin.assert:
-        that: true
+        that: ansible_test_file.stat.exists
+        fail_msg: "/tmp/ansible-test.txt does not exist"
