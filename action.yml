@@ -65,7 +65,7 @@ inputs:
 
 runs:
   using: docker
-  image: docker://ghcr.io/truestory1/molecule-action:latest
+  image: docker://ghcr.io/truestory1/molecule-action:latest@sha256:8937ae6cfc3123c423ac02bf539f4bf5559f3cdc3ecc796d63aa24f6d4d9f3f3
   env:
     ANSIBLE_ASYNC_DIR: "/tmp/.ansible_async"
     ANSIBLE_FORCE_COLOR: "1"
